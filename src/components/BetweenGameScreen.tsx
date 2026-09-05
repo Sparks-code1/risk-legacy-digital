@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { LegacyState } from '@/types/legacy'
 import {
-  loadLegacyState, loadGameHistory, saveLegacyState, createCampaign, ensureJoinCode,
+  loadLegacyState, loadGameHistory, saveLegacyState, createCampaign, ensureJoinCode, campaignIsShared,
   getActiveCampaignId, setActiveCampaignId, clearActiveCampaignId, setLocalSeat,
   getPreferredName, setPreferredName,
   type GameSessionRow, SCAR_META,
@@ -706,24 +706,53 @@ export default function BetweenGameScreen({ onReadyForDiceRoll, onResumeGame, on
               </>
             ) : (
               <>
-                <button onClick={handleContinue} style={primaryBtn('#C8940A')}>
-                  🃏 Deal Scar Cards &amp; Start Game #{legacy.currentGameNumber} (one screen)
-                </button>
+                {/* ── A SHARED CAMPAIGN IS PLAYED ONLINE, FULL STOP ──────────────
+                    A campaign with more than one account on it (or a match already
+                    open) is one whose players sit at different machines, and the
+                    one-screen start has no honest meaning there: for the host it
+                    is a way to start a game the others cannot join, and for a
+                    joiner it is a way to start a second game beside the host's.
+                    Both have happened. So it is not offered at all on a shared
+                    campaign — starting IS hosting — and it stays for the campaign
+                    that really is one screen. */}
+                {!campaignIsShared(legacy) && (
+                  <button onClick={handleContinue} style={primaryBtn('#C8940A')}>
+                    🃏 Deal Scar Cards &amp; Start Game #{legacy.currentGameNumber} (one screen)
+                  </button>
+                )}
                 {/* Hosting opens a lobby and waits. Hidden while somebody else
                     is already hosting — the panel above outranks it, because a
-                    second lobby is the two-games problem all over again. */}
+                    second lobby is the two-games problem all over again. On a
+                    shared campaign it is THE start button and dresses as one. */}
                 {user && !openLobby && (
                   <button
                     onClick={hostOnlineGame}
                     disabled={hostingGame}
                     style={{
-                      ...primaryBtn('#2980B9'), marginTop: 8,
-                      border: '2px solid rgba(41,128,185,0.55)',
-                      background: 'rgba(41,128,185,0.12)',
+                      ...primaryBtn(campaignIsShared(legacy) ? '#C8940A' : '#2980B9'),
+                      marginTop: campaignIsShared(legacy) ? 0 : 8,
+                      ...(campaignIsShared(legacy) ? {} : {
+                        border: '2px solid rgba(41,128,185,0.55)',
+                        background: 'rgba(41,128,185,0.12)',
+                      }),
                       opacity: hostingGame ? 0.5 : 1,
                     }}>
-                    {hostingGame ? 'Opening lobby…' : `🌐 Host Game #${legacy.currentGameNumber} Online`}
+                    {hostingGame
+                      ? 'Opening lobby…'
+                      : campaignIsShared(legacy)
+                        ? `🌐 Start Game #${legacy.currentGameNumber} — everyone joins online`
+                        : `🌐 Host Game #${legacy.currentGameNumber} Online`}
                   </button>
+                )}
+                {campaignIsShared(legacy) && !user && (
+                  <div style={{
+                    padding: '10px 12px', borderRadius: 6, fontSize: 11.5, lineHeight: 1.5,
+                    background: 'rgba(200,148,10,0.08)', border: '1px solid rgba(200,148,10,0.30)',
+                    color: '#c8b080', textAlign: 'center',
+                  }}>
+                    This campaign is played online. Sign in — My Account, top right — to
+                    start the next game or to join one the host has opened.
+                  </div>
                 )}
                 {hostError && (
                   <div style={{
