@@ -26,6 +26,11 @@ export default function TerritoryPanel({ territory, players, onClose }: Props) {
       bottom: 24,
       right: 24,
       width: 280,
+      // ABOVE THE HIT LAYER. The PixiJS canvas that does the board's hit
+      // testing sits at z-index 3 and is transparent, so a panel with no
+      // z-index of its own showed through it perfectly — and every click on
+      // the panel, the × included, landed on the map underneath instead.
+      zIndex: 20,
       background: 'rgba(15,10,5,0.92)',
       border: '1px solid rgba(200,180,120,0.35)',
       borderRadius: 8,
@@ -45,6 +50,7 @@ export default function TerritoryPanel({ territory, players, onClose }: Props) {
         </div>
         <button
           onClick={onClose}
+          aria-label="Close territory details"
           style={{ background: 'none', border: 'none', color: '#a09070', fontSize: 18, cursor: 'pointer', padding: '0 0 0 8px', lineHeight: 1 }}
         >×</button>
       </div>

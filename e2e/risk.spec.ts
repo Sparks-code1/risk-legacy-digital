@@ -15,6 +15,7 @@ import { test, expect } from '@playwright/test'
 import {
   soloGame, newCampaign, openSlots, playSetup, startGame, onBoard,
   whoseTurn, passTurn, territoryIdNamed, playRounds, gameOver, ageCampaign,
+  clickTerritory,
 } from './support/risk'
 
 /**
@@ -135,6 +136,26 @@ test('two computers set up a game with nobody clicking for them', async ({ page 
   }
 })
 
+test('the territory panel closes on its ×', async ({ page }) => {
+  // The panel sits over the map, and the map's hit-test canvas has a z-index
+  // of its own. For a while the panel had none, so every click on it — the ×
+  // included — landed on the map underneath: the panel showed through the
+  // transparent canvas and could not be touched. Playwright sees that as the
+  // canvas intercepting the click, not as a click that landed and did nothing.
+  await soloGame(page, { players: 2, ai: [1] })
+  // NEUTRAL GROUND OPENS THE PANEL. The game opens in the draft, where a click
+  // on your own territory places a troop there and opens nothing — so the
+  // walk tries a run of territories two HQs are unlikely to have both taken,
+  // and stops at the first that answers with a panel.
+  const close = page.getByRole('button', { name: 'Close territory details' })
+  for (const name of ['Brazil', 'Egypt', 'India', 'Ukraine', 'Peru', 'China']) {
+    await clickTerritory(page, territoryIdNamed(name))
+    if (await close.count()) break
+  }
+  await expect(close, 'no territory click opened its panel').toBeVisible()
+  await close.click({ timeout: 10_000 })
+  await expect(close, 'the panel is still open after its × was clicked').toHaveCount(0)
+})
 test('the computer takes a whole turn and hands control back', async ({ page }) => {
   // THE OLDEST OPEN QUESTION ABOUT RISK. The AI turn driver — reinforce, then
   // attack, then fortify, then end — has never been watched from one end to the
