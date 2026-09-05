@@ -14,7 +14,7 @@ import {
 } from '@/lib/setupFlow'
 import {
   FactionChoiceList, AbilityChoicePair, FACTION_NAMES, factionRgb, abilityName,
-  availableFactions,
+  availableFactions, factionNameRgb, SWATCH_RIM,
 } from './FactionChoicePanels'
 import WeaknessPowerPicker from './WeaknessPowerPicker'
 import HQMapPicker from './HQMapPicker'
@@ -364,14 +364,14 @@ export default function OnlineSetupScreen({ lobby: initial, legacy, user, onComp
                   background: isActive ? 'rgba(200,148,10,0.08)' : 'rgba(0,0,0,0.25)',
                   border: `1px solid ${isActive ? 'rgba(200,148,10,0.50)' : 'rgba(100,75,25,0.18)'}`,
                 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: fid ? factionRgb(fid) : 'rgb(100,80,50)', flexShrink: 0 }} />
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: fid ? factionRgb(fid) : 'rgb(100,80,50)', border: SWATCH_RIM, flexShrink: 0 }} />
                   <div style={{ flex: 1, fontSize: 13, color: isActive ? '#E8DCC8' : '#7a6040' }}>
                     {idx + 1}. {seatName(pid)}
                     {minePids.includes(pid) && <span style={{ fontSize: 9, color: '#6a5030' }}> (you)</span>}
                     {isActive && <span style={{ fontSize: 9, color: GOLD, marginLeft: 6 }}>← choosing now</span>}
                   </div>
                   <div style={{ fontSize: 11, color: '#9a8060', textAlign: 'right' }}>
-                    {fid && <span style={{ color: factionRgb(fid) }}>{FACTION_NAMES[fid]}</span>}
+                    {fid && <span style={{ color: factionNameRgb(fid) }}>{FACTION_NAMES[fid]}</span>}
                     {abLabel && <span style={{ color: '#27AE60', marginLeft: 6 }}>★ {abLabel}</span>}
                     {tName && <span style={{ color: '#27AE60', marginLeft: 6 }}>♛ {tName}</span>}
                   </div>
@@ -471,7 +471,7 @@ function OrderStrip({ doc, seatName }: { doc: SetupDoc; seatName: (pid: string) 
             border: `1px solid ${isActive ? 'rgba(200,148,10,0.50)' : 'rgba(100,75,25,0.14)'}`,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-              <div style={{ width: 9, height: 9, borderRadius: '50%', background: factionRgb(doc.factions[pid]), flexShrink: 0 }} />
+              <div style={{ width: 9, height: 9, borderRadius: '50%', background: factionRgb(doc.factions[pid]), border: SWATCH_RIM, flexShrink: 0 }} />
               <div style={{ fontSize: 12, color: isActive ? '#E8DCC8' : tName ? '#9a8060' : '#4a3820', fontWeight: isActive ? 'bold' : 'normal' }}>
                 {seatName(pid)}
               </div>

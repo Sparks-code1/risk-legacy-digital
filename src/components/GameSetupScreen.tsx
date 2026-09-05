@@ -11,7 +11,7 @@ import HQMapPicker from './HQMapPicker'
 import WeaknessPowerPicker from './WeaknessPowerPicker'
 import {
   FactionChoiceList, AbilityChoicePair, FACTION_NAMES, hexToRgb, abilityName,
-  availableFactions,
+  availableFactions, factionNameRgb, SWATCH_RIM,
 } from './FactionChoicePanels'
 
 export interface PlayerSetup {
@@ -309,7 +309,7 @@ export default function GameSetupScreen({ playerOrder, existingAbilities, remove
                   border: `1px solid ${isActive ? 'rgba(200,148,10,0.50)' : 'rgba(100,75,25,0.14)'}`,
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                    <div style={{ width: 9, height: 9, borderRadius: '50%', background: isDone ? col : (isActive ? col : '#3a2810'), flexShrink: 0 }} />
+                    <div style={{ width: 9, height: 9, borderRadius: '50%', background: isDone ? col : (isActive ? col : '#3a2810'), border: SWATCH_RIM, flexShrink: 0 }} />
                     <div style={{ fontSize: 12, color: isActive ? '#E8DCC8' : (isDone ? '#9a8060' : '#4a3820'), fontWeight: isActive ? 'bold' : 'normal' }}>
                       {p.name}
                     </div>
@@ -386,13 +386,13 @@ export default function GameSetupScreen({ playerOrder, existingAbilities, remove
                 background: isActive ? 'rgba(200,148,10,0.08)' : 'rgba(0,0,0,0.25)',
                 border: `1px solid ${isActive ? 'rgba(200,148,10,0.50)' : 'rgba(100,75,25,0.18)'}`,
               }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, flexShrink: 0 }} />
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, border: SWATCH_RIM, flexShrink: 0 }} />
                 <div style={{ flex: 1, fontSize: 13, color: isActive ? '#E8DCC8' : '#7a6040' }}>
                   {p.name}
                   {isActive && <span style={{ fontSize: 9, color: '#C8940A', marginLeft: 6 }}>← choosing now</span>}
                 </div>
                 <div style={{ fontSize: 11, color: '#9a8060', textAlign: 'right' }}>
-                  {fid && <span style={{ color }}>{FACTION_NAMES[fid]}</span>}
+                  {fid && <span style={{ color: factionNameRgb(fid) }}>{FACTION_NAMES[fid]}</span>}
                   {abilityLabel && phase !== 'faction' && (
                     <span style={{ color: '#27AE60', marginLeft: 6 }}>★ {abilityLabel}</span>
                   )}
